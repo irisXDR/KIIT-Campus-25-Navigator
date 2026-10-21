@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>KIIT Campus 25 Navigator</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="Indoor floor navigation and shortest-path finder for KIIT Campus 25.">
+  <meta name="theme-color" content="#d97706">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="KIIT Campus 25 Navigator">
+  <meta property="og:description" content="Indoor floor navigation and shortest-path finder for KIIT Campus 25.">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="/icon.svg">
+  <script src="/qrcode.js"></script>
+</head>
+<body>
+  <!-- Map Canvas -->
+  <svg id="map" aria-label="Campus 25 Map">
+    <g id="vp">
+      <g id="roads"></g>
+      <path id="route" />
+      <g id="arrows"></g>
+      <g id="nodes"></g>
+      <circle id="cur" r="7" />
+      <text id="ttl" x="900" y="70" text-anchor="middle" fill="#e2e8f0" font-size="26" font-weight="700" letter-spacing="4" style="pointer-events:none">CAMPUS 25</text>
+      <text id="sub" x="900" y="92" text-anchor="middle" fill="#f59e0b" font-size="12" font-weight="600" letter-spacing="2" style="pointer-events:none">GROUND FLOOR</text>
+    </g>
+  </svg>
+
+  <!-- Inter-Floor Guidance Banner -->
+  <div id="bn" role="status" aria-live="polite"></div>
+
+  <!-- Top Controls -->
+  <header id="top">
+    <button class="tb" id="gear" title="Toggle Labels" aria-label="Toggle Labels" aria-pressed="true">Labels</button>
+    <button class="tb ib" id="shr" title="Share route / QR code" aria-label="Share route">Share</button>
+
+    <!-- Floor Selector -->
+    <div style="position:relative">
+      <button class="tb" id="fb" aria-haspopup="true" aria-expanded="false">
+        Level: <b id="fl">GF</b>
+      </button>
+      <div id="fm" class="dd floor-dropdown" role="menu"></div>
+    </div>
+  </header>
+
+  <!-- Zoom Controls -->
+  <div id="zoom">
+    <button class="ib" id="btn-zin" title="Zoom In" aria-label="Zoom In">+</button>
+    <button class="ib" id="btn-zout" title="Zoom Out" aria-label="Zoom Out">-</button>
+    <button class="ib" id="btn-fit" title="Fit Map View" aria-label="Fit Map">&#8635;</button>
+  </div>
+
+  <!-- Navigation Sidebar -->
+  <main class="pn" id="side">
+    <div class="side-header">
+      <div class="title-group">
+        <div class="badge-logo">C25</div>
+        <div>
+          <h1>Campus 25 Navigator</h1>
+          <span class="sub-header">KIIT University - Floor Navigation</span>
+        </div>
+      </div>
+      <button class="ib toggle-btn" id="col" title="Collapse Panel" aria-label="Toggle Sidebar">&lt;</button>
+    </div>
+
+    <div class="body" id="sb">
+      <!-- Target Mode Tabs -->
+      <div class="tg" role="tablist">
+        <button id="ts" class="on" role="tab" aria-selected="true">SET START</button>
+        <button id="td" role="tab" aria-selected="false">SET DESTINATION</button>
+      </div>
+
+      <!-- Search Field -->
+      <div class="fld">
+        <input id="q" placeholder="Search room, stairs, lift, or facility..." autocomplete="off" aria-label="Search location">
+        <button class="x" id="qx" hidden title="Clear search">x</button>
+        <div class="dd" id="dd" role="listbox"></div>
+      </div>
+
+      <div id="wc"></div>
+
+      <!-- Endpoint Cards -->
+      <div class="card on" id="cf">
+        <span class="pin">A</span>
+        <div>
+          <small>START POINT</small>
+          <b id="vf">Not set</b>
+        </div>
+      </div>
+
+      <div class="card" id="ct">
+        <span class="pin b">B</span>
+        <div>
+          <small>DESTINATION</small>
+          <b id="vt">Not set</b>
+        </div>
+      </div>
+
+      <!-- Floor Connector Choice -->
+      <div id="cn" class="chips" style="display:none">
+        <small>CONNECTOR TYPE</small>
+        <button data-c="stairs" class="on">Use Stairs</button>
+        <button data-c="lift">Use Lift</button>
+      </div>
+
+      <!-- Action Row -->
+      <div class="action-row">
+        <button class="ib swap-btn" id="sw" title="Swap Endpoints" aria-label="Swap">Swap</button>
+        <button id="sf" aria-pressed="false" title="Lift only, no stairs" class="btn-sf">Step-free</button>
+        <button id="calc" class="btn-calculate">Calculate Route</button>
+      </div>
+
+      <button id="clr" class="btn-clear">Clear Route</button>
+
+      <!-- Route Summary -->
+      <div id="sum" class="route-summary" style="display:none"></div>
+
+      <!-- Quick Navigation -->
+      <div class="quick-nav-wrap">
+        <div class="lb">QUICK FIND (FROM START)</div>
+        <div class="qn">
+          <button data-q="s">Nearest Stairs</button>
+          <button data-q="l">Nearest Lift</button>
+          <button data-q="g">Gents Washroom</button>
+          <button data-q="f">Ladies Washroom</button>
+          <button data-q="w">Water Cooler</button>
+          <button data-q="e">Building Exit</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Step-by-Step Directions -->
+  <section class="pn" id="steps" aria-live="polite">
+    <div class="st">
+      <div class="step-badge" id="step-icon">Step</div>
+      <div class="t">
+        <div class="step-meta">
+          <span id="sn">Step 1 of 3</span>
+          <span id="route-dist" class="route-dist-pill">0 m</span>
+        </div>
+        <span id="stx" class="step-instruction">Follow directions</span>
+      </div>
+      <div class="step-actions">
+        <button class="ib" id="pv" title="Previous Step" aria-label="Previous">&lt;</button>
+        <button class="ib" id="nx" title="Next Step" aria-label="Next">&gt;</button>
+        <button class="ib" id="ex2" title="Toggle Step List" aria-label="Expand List">List</button>
+      </div>
+    </div>
+    <div class="progress-bar-wrap">
+      <div id="step-progress" class="progress-bar"></div>
+    </div>
+    <ol id="sl"></ol>
+  </section>
+
+  <!-- Node Popup Card -->
+  <div id="node-card" class="node-popup" style="display:none">
+    <div class="node-header">
+      <div>
+        <h4 id="nc-title">Room Name</h4>
+        <div class="nc-badges">
+          <span id="nc-type" class="bd">CLASSROOM</span>
+          <span id="nc-floor" class="bd ex">GF</span>
+        </div>
+      </div>
+      <button class="ib nc-close" id="nc-close" title="Close">x</button>
+    </div>
+    <div class="node-actions">
+      <button id="nc-set-start" class="btn-primary">Set as Start (A)</button>
+      <button id="nc-set-dest" class="btn-secondary">Set as Dest (B)</button>
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <footer id="lg">
+    <span><i style="background:#2563eb"></i>Block A</span>
+    <span><i style="background:#ea580c"></i>Block B</span>
+    <span><i style="background:#475569"></i>Block C</span>
+    <span><i style="background:#16a34a"></i>Stairs</span>
+    <span><i style="background:#0891b2"></i>Lift</span>
+    <span><i style="background:#0284c7"></i>Gents</span>
+    <span><i style="background:#db2777"></i>Ladies</span>
+    <span><i style="background:#06b6d4"></i>Water</span>
+    <span><i style="background:#d97706"></i>Entry</span>
+    <span><i style="background:#38bdf8"></i>Path</span>
+  </footer>
+
+  <!-- Toast -->
+  <div id="toast" role="status"></div>
+
+  <!-- QR / Share Modal -->
+  <div id="qrm" role="dialog" aria-modal="true" aria-label="Share route" hidden>
+    <div class="mc">
+      <h2>Share Route</h2>
+      <div id="qrb"></div>
+      <p id="qrl"></p>
+      <div class="chips" style="justify-content:center">
+        <button id="qrc">Copy link</button>
+        <button id="qrx">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
