@@ -140,12 +140,41 @@ export function renderFloor(floorIdx, onNodeSelectCallback, onConnectorClickCall
       'aria-label': `${getNodeLabel(node)}, ${ROOM_TYPES[node.t] || 'Room'}, ${FLOOR_NAMES[floorIdx]}`
     }, $('nodes'));
 
-    if (isRoom) {
-      createSvgElement('rect', {
-        x: node.x - 12, y: node.y - 8, width: 24, height: 16,
-        rx: 3, fill: COLORS[node.t] || '#64748b'
-      }, group);
-    } else {
+ 
+if (isRoom) {
+  createSvgElement('rect', {
+    x: node.x - 20,
+    y: node.y - 14,
+    width: 40,
+    height: 28,
+    rx: 1,
+    fill: '#172235',
+    stroke: '#64748b',
+    'stroke-width': 1.5,
+    'vector-effect': 'non-scaling-stroke'
+  }, group);
+} else {
+  createSvgElement('circle', {
+    cx: node.x,
+    cy: node.y,
+    r: 9,
+    fill: '#111c2e',
+    stroke: COLORS[node.t] || '#94a3b8',
+    'stroke-width': 1.5,
+    'vector-effect': 'non-scaling-stroke'
+  }, group);
+
+  createSvgElement('text', {
+    x: node.x,
+    y: node.y + 3.5,
+    'text-anchor': 'middle',
+    'font-size': 9,
+    'font-weight': 'bold',
+    fill: COLORS[node.t] || '#fff',
+    style: 'pointer-events:none'
+  }, group).textContent = ICONS[node.t] || 'o';
+}
+ else {
       createSvgElement('circle', {
         cx: node.x, cy: node.y, r: 9,
         fill: '#18181b', stroke: COLORS[node.t] || '#fff', 'stroke-width': 1.5
