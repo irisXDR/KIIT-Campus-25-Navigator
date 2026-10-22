@@ -1708,4 +1708,109 @@ select:focus-visible {
   }
 }
 
+/* ===== Midnight Blueprint Map ===== */
+
+:root {
+  --map-bg: #07111f;
+  --map-panel: #0c1a2e;
+  --map-line: #344b68;
+  --map-line-soft: #1b2d46;
+  --map-cyan: #20ddf5;
+  --map-blue: #3478ff;
+  --map-text: #eaf3ff;
+  --map-muted: #91a6c2;
+}
+
+/* Main map canvas */
+#map {
+  background-color: var(--map-bg) !important;
+  color: var(--map-text);
+}
+
+/* Darken the overall page behind the map */
+html,
+body {
+  background: var(--map-bg);
+  color: var(--map-text);
+}
+
+/* Architectural outlines — existing roads layer */
+#map #roads path,
+#map #roads line,
+#map #roads polyline,
+#map #roads polygon {
+  stroke: var(--map-line) !important;
+  stroke-width: 1.5px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Make existing map shapes less visually heavy */
+#map #vp path,
+#map #vp polygon,
+#map #vp rect {
+  stroke: var(--map-line-soft);
+}
+
+/* Existing navigation route */
+#map #route path,
+#map #route line,
+#map #route polyline {
+  stroke: var(--map-cyan) !important;
+  stroke-width: 4px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 5px #20ddf580);
+}
+
+/* Route direction arrows */
+#map #arrows path,
+#map #arrows polygon {
+  fill: var(--map-cyan) !important;
+  stroke: var(--map-cyan) !important;
+}
+
+/* Existing map markers */
+#map #nodes circle {
+  stroke: var(--map-cyan);
+  stroke-width: 2px;
+}
+
+/* Top controls */
+#top {
+  background: rgba(8, 20, 37, 0.96);
+  border: 1px solid #253b58;
+  border-radius: 12px;
+  color: var(--map-text);
+  box-shadow: 0 8px 28px #0005;
+  backdrop-filter: blur(12px);
+}
+
+/* Navigation side panel */
+#side {
+  background: rgba(12, 26, 46, 0.97);
+  border: 1px solid #253b58;
+  border-radius: 16px;
+  color: var(--map-text);
+  box-shadow: 0 12px 36px #0005;
+  backdrop-filter: blur(12px);
+}
+
+/* Form controls */
+#side input,
+#side select {
+  background: #081629;
+  border: 1px solid #2b4260;
+  border-radius: 9px;
+  color: var(--map-text);
+}
+
+/* Keyboard focus */
+#side input:focus-visible,
+#side select:focus-visible,
+#side button:focus-visible {
+  outline: 2px solid var(--map-cyan);
+  outline-offset: 2px;
+}
+
 
