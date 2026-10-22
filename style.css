@@ -1207,14 +1207,14 @@ select {
 }
 
 /* ==========================================
-   CAMPUS 25 — FLOOR PLAN UI REDESIGN
+   CAMPUS 25 — FLOOR PLAN LAYOUT REDESIGN
    ========================================== */
 
 :root {
   --bg: #0b1220;
   --p: #111c2e;
   --p-hover: #1b2b42;
-  --bd: #293a54;
+  --bd: #293d59;
   --bd-focus: #60a5fa;
   --tx: #f1f5f9;
   --tx-dim: #b9c6d8;
@@ -1224,7 +1224,7 @@ select {
   --radius: 12px;
 }
 
-/* Main background */
+/* Page */
 html,
 body {
   background: var(--bg);
@@ -1232,110 +1232,163 @@ body {
   font-family: Inter, "Segoe UI", Arial, sans-serif;
 }
 
-/* Map canvas: preserve its existing size and position */
+/* MAP: leave space for the header and sidebar */
 #map {
+  position: absolute;
+  left: 376px;
+  top: 68px;
+  width: calc(100% - 376px);
+  height: calc(100% - 68px);
+  inset: auto;
   background: #0b1220;
 }
 
-/* Navigation sidebar */
-#side {
-  left: 16px;
-  top: 16px;
-  width: min(350px, calc(100% - 32px));
-  max-height: calc(100vh - 32px);
-  overflow: hidden;
-  background: rgba(15, 27, 45, 0.97);
-  border: 1px solid #293d59;
-  border-radius: 16px;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(16px);
+/* FULL-WIDTH TOP NAVIGATION BAR */
+#top {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 68px;
+  width: 100%;
+  padding: 0 22px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  background: #101b2d;
+  border-bottom: 1px solid #293d59;
+  z-index: 100;
 }
 
-/* Sidebar heading */
+/* Brand title on the left of the header */
+#top::before {
+  content: "KIIT   |   Campus Navigator";
+  position: absolute;
+  left: 28px;
+  top: 0;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  color: #f1f5f9;
+  font-size: 19px;
+  font-weight: 750;
+  letter-spacing: -0.4px;
+  pointer-events: none;
+}
+
+/* Header controls */
+.tb {
+  height: 42px;
+  padding: 0 15px;
+  background: #142239;
+  border: 1px solid #344a68;
+  border-radius: 10px;
+  color: #e2eaf7;
+}
+
+.tb:hover {
+  background: #203653;
+}
+
+/* LEFT SIDEBAR */
+#side {
+  position: fixed;
+  left: 0;
+  top: 68px;
+  bottom: 0;
+  width: 376px;
+  max-height: none;
+  display: flex;
+  flex-direction: column;
+  background: #0f1b2d;
+  border: none;
+  border-right: 1px solid #293d59;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: hidden;
+  z-index: 30;
+}
+
 .side-header {
-  padding: 18px;
+  padding: 20px 18px;
+  background: #101b2d;
   border-bottom: 1px solid #293d59;
 }
 
 #side h1 {
   font-size: 17px;
   font-weight: 750;
-  letter-spacing: -0.4px;
+  color: #f8fafc;
 }
 
 .badge-logo {
   background: #0e7490;
-  border-radius: 8px;
-  padding: 7px 9px;
+  border-radius: 9px;
+  padding: 8px;
 }
 
 .sub-header {
-  color: #9fb2ca;
-  line-height: 1.5;
+  margin-top: 5px;
+  color: #91a7c4;
+  font-size: 11px;
 }
 
-/* Scrollable sidebar content */
 .body {
-  padding: 16px;
+  padding: 18px;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #40536e transparent;
 }
 
-/* Search fields */
-input,
-select {
-  background: #0b1627;
-  color: #f1f5f9;
-  border: 1px solid #314663;
-  border-radius: 10px;
+/* SEARCH */
+.fld {
+  margin-bottom: 14px;
+}
+
+input {
+  width: 100%;
   padding: 12px;
-  font-size: 13px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  color: #f1f5f9;
+  background: #0b1627;
+  border: 1px solid #344a68;
+  border-radius: 10px;
 }
 
 input::placeholder {
-  color: #7e90a8;
+  color: #91a2ba;
 }
 
-input:focus,
-select:focus {
+input:focus {
+  outline: none;
   border-color: #38bdf8;
   box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12);
-  outline: none;
 }
 
-/* Buttons */
-button {
+/* START AND DESTINATION */
+.tg {
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.tg button {
+  min-height: 40px;
+  background: #142239;
+  border: 1px solid #344a68;
   border-radius: 9px;
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.2s ease;
+  color: #b9c6d8;
 }
 
-button:hover:not(:disabled) {
-  border-color: #60a5fa;
-}
-
-button:active:not(:disabled) {
-  transform: scale(0.98);
-}
-
-/* Selected navigation mode */
 .tg button.on {
-  color: #93c5fd;
-  background: #172c4b;
+  background: #17375d;
   border-color: #3b82f6;
+  color: #bfdbfe;
 }
 
-/* Starting point and destination cards */
 .card {
-  background: #101e32;
+  margin-top: 8px;
+  padding: 13px;
+  background: #111f33;
   border: 1px solid #2b405d;
   border-radius: 11px;
-  padding: 12px;
-  margin-top: 8px;
 }
 
 .card:hover {
@@ -1349,80 +1402,121 @@ button:active:not(:disabled) {
 }
 
 .card small {
-  color: #9fb2ca;
-  font-size: 10px;
-  letter-spacing: 0.06em;
+  color: #91a7c4;
 }
 
 .card b {
+  color: #f1f5f9;
   font-size: 13px;
 }
 
-/* Route action button */
+.pin {
+  border-radius: 7px;
+}
+
+.pin.b {
+  background: #e11d48;
+}
+
+/* NAVIGATION BUTTONS */
+.action-row {
+  display: flex;
+  gap: 7px;
+  margin-top: 14px;
+}
+
+.action-row button {
+  min-height: 40px;
+  border-radius: 9px;
+}
+
 .btn-calculate,
 .btn-primary {
-  background: linear-gradient(135deg, #2563eb, #1677f9);
-  border: 1px solid #3985ff;
+  background: #2563eb;
   color: white;
-  border-radius: 10px;
+  border: 1px solid #3b82f6;
+  border-radius: 9px;
   font-weight: 700;
-  box-shadow: 0 5px 18px rgba(37, 99, 235, 0.18);
 }
 
-.btn-calculate {
-  min-height: 44px;
-}
-
-.btn-calculate:hover:not(:disabled),
-.btn-primary:hover:not(:disabled) {
+.btn-calculate:hover,
+.btn-primary:hover {
   background: #1d4ed8;
 }
 
-/* Quick navigation filters */
+.btn-sf,
+.swap-btn {
+  background: #142239;
+  border: 1px solid #344a68;
+  color: #dbeafe;
+}
+
+/* QUICK FIND FILTERS */
+.quick-nav-wrap {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid #293d59;
+}
+
+.lb {
+  color: #dbeafe;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
 .qn {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
 
 .qn button,
 .chips button {
-  background: #142238;
+  min-height: 38px;
+  padding: 9px;
+  background: #142239;
   border: 1px solid #304662;
-  color: #c5d3e5;
   border-radius: 9px;
-  padding: 10px;
+  color: #c5d3e5;
 }
 
-.qn button:hover:not(:disabled),
-.chips button:hover:not(:disabled) {
+.qn button:hover,
+.chips button:hover {
   background: #203653;
   color: #ffffff;
 }
 
 .chips {
-  background: #101e32;
-  border: 1px solid #2b405d;
-  border-radius: 11px;
+  background: #111f33;
+  border-color: #304662;
+  border-radius: 10px;
 }
 
-/* Dropdown and room search results */
-.dd {
-  background: #111e31;
-  border: 1px solid #344b6b;
-  border-radius: 11px;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+/* MAP ZOOM CONTROLS */
+#zoom {
+  position: fixed;
+  right: 16px;
+  top: calc(50% + 34px);
+  transform: translateY(-50%);
+  gap: 5px;
+  z-index: 25;
 }
 
-.dd div:hover,
-.dd div.selected {
-  background: #203653;
+#zoom .ib {
+  width: 42px;
+  height: 42px;
+  background: #142239;
+  border: 1px solid #344a68;
+  border-radius: 9px;
+  color: #f1f5f9;
 }
 
-/* Floor selector */
+/* FLOOR MENU */
 #fm {
   background: #111e31;
-  border-color: #344b6b;
-  border-radius: 11px;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+  border: 1px solid #344b6b;
+  border-radius: 10px;
 }
 
 #fm div.on {
@@ -1431,113 +1525,147 @@ button:active:not(:disabled) {
   color: #bfdbfe;
 }
 
-/* Zoom controls */
-#zoom .ib {
-  width: 42px;
-  height: 42px;
-  background: #132239;
-  border-color: #354c6b;
-  border-radius: 10px;
-  font-size: 17px;
+/* ROUTE AND ROOM DETAILS */
+#route {
+  stroke: #22d3ee;
+  filter: drop-shadow(0 0 4px rgba(34, 211, 238, 0.5));
 }
 
-/* Navigation guidance */
-#bn {
-  background: #122744;
-  color: #bae6fd;
-  border: 1px solid #2563eb;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
-}
-
-/* Route summary and directions */
-.route-summary {
-  background: #10243a;
-  border: 1px solid #245078;
-  border-radius: 12px;
-  padding: 13px;
-}
-
-.route-summary b {
-  color: #67e8f9;
-}
-
-#steps {
-  background: rgba(15, 27, 45, 0.98);
-  border: 1px solid #315578;
-  border-radius: 16px;
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(14px);
-}
-
-.step-badge {
-  background: #13314b;
-  border-color: #0e7490;
-  color: #67e8f9;
-  border-radius: 11px;
-}
-
-.step-instruction {
-  color: #f1f5f9;
-  line-height: 1.5;
-}
-
-/* Room labels on the map */
 .nl text {
   fill: #e2eaf7;
-  font-size: 7px;
   font-weight: 650;
-  paint-order: stroke;
-  stroke: #0b1220;
-  stroke-width: 0.6px;
-  stroke-linejoin: round;
 }
 
-/* Highlight rooms on hover */
 .nd:hover rect,
 .nd:hover circle,
 .nd:focus-visible rect,
 .nd:focus-visible circle {
   stroke: #67e8f9 !important;
   stroke-width: 2 !important;
-  filter: drop-shadow(0 0 5px rgba(34, 211, 238, 0.7));
-}
-
-/* Selected route */
-#route {
-  stroke: #22d3ee;
-  stroke-width: 3.5;
   filter: drop-shadow(0 0 5px rgba(34, 211, 238, 0.55));
 }
 
-/* Legend */
+#bn {
+  top: 82px;
+  border-radius: 10px;
+  background: #142744;
+  border-color: #2563eb;
+  color: #bfdbfe;
+}
+
+/* ROUTE SUMMARY */
+.route-summary {
+  padding: 13px;
+  background: #10243a;
+  border: 1px solid #245078;
+  border-radius: 11px;
+}
+
+.route-summary b {
+  color: #67e8f9;
+}
+
+/* STEP-BY-STEP ROUTE PANEL */
+#steps {
+  position: fixed;
+  left: 394px;
+  bottom: 18px;
+  width: min(620px, calc(100% - 420px));
+  padding: 16px;
+  background: rgba(15, 27, 45, 0.97);
+  border: 1px solid #315578;
+  border-radius: 15px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+  z-index: 20;
+}
+
+.step-badge {
+  background: #13314b;
+  border-color: #0e7490;
+  color: #67e8f9;
+  border-radius: 10px;
+}
+
+/* LEGEND AT BOTTOM OF MAP */
 #lg {
+  position: fixed;
+  left: calc(376px + (100% - 376px) / 2);
+  bottom: 16px;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100% - 410px);
+  padding: 10px 14px;
   background: rgba(15, 27, 45, 0.96);
   border: 1px solid #304662;
-  border-radius: 12px;
-  padding: 10px 14px;
+  border-radius: 11px;
   color: #c5d3e5;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.22);
+  z-index: 12;
 }
 
-/* Room popup */
+#lg i {
+  border-radius: 3px;
+}
+
+/* SEARCH RESULTS AND POPUPS */
+.dd,
 .node-popup {
-  background: rgba(15, 27, 45, 0.98);
-  border: 1px solid #36516f;
-  border-radius: 15px;
-  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.35);
+  background: #111e31;
+  border: 1px solid #344b6b;
+  border-radius: 11px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
 }
 
-/* Keyboard accessibility */
+.dd div:hover {
+  background: #203653;
+}
+
+#toast {
+  top: 82px;
+  background: #142744;
+  border-color: #315578;
+}
+
+/* BUTTON INTERACTIONS */
+button {
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
 button:focus-visible,
 input:focus-visible,
 select:focus-visible {
   outline: 2px solid #67e8f9;
-  outline-offset: 3px;
+  outline-offset: 2px;
 }
 
-/* Mobile layout */
+/* MOBILE LAYOUT */
 @media (max-width: 768px) {
+  #map {
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  #top {
+    height: 54px;
+    padding: 0 10px;
+    gap: 5px;
+  }
+
+  #top::before {
+    left: 12px;
+    height: 54px;
+    content: "KIIT Navigator";
+    font-size: 14px;
+  }
+
+  .tb {
+    height: 34px;
+    padding: 0 8px;
+    font-size: 11px;
+  }
+
   #side {
     left: 8px;
     right: 8px;
@@ -1545,15 +1673,25 @@ select:focus-visible {
     bottom: 8px;
     width: auto;
     max-height: 48vh;
-    border-radius: 16px;
+    border: 1px solid #293d59;
+    border-radius: 15px;
   }
 
   .side-header {
-    padding: 13px 14px;
+    padding: 12px;
   }
 
   .body {
-    padding: 12px 14px;
+    padding: 12px;
+  }
+
+  #zoom {
+    right: 8px;
+    top: 35%;
+  }
+
+  #lg {
+    display: none;
   }
 
   #steps {
@@ -1561,29 +1699,13 @@ select:focus-visible {
     right: 8px;
     bottom: 8px;
     width: auto;
+    padding: 12px;
   }
 
-  #zoom {
-    right: 8px;
-    top: 40%;
-  }
-
-  #lg {
-    display: none;
-  }
-
-  .btn-calculate {
-    min-height: 42px;
+  #bn {
+    top: 60px;
+    max-width: calc(100% - 16px);
   }
 }
 
-/* Respect reduced-motion preferences */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
-}
 
